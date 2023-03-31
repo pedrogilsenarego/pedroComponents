@@ -1,4 +1,5 @@
 import DancingCarousell from "./components/Carousells/DancingCarousell";
+import VerticalCarousell from "./components/Carousells/VerticalCarousell";
 
 const App = () => {
   return (
@@ -10,10 +11,11 @@ const App = () => {
           backgroundColor: "black",
         }}
       >
+        <VerticalCarousell />
         <DancingCarousell />
       </div>
     </>
   );
-}
+};
 
 export default App;

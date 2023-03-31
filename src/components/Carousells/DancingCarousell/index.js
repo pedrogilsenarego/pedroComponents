@@ -1,42 +1,36 @@
 import { Box } from "@mui/material";
-import { Colors } from "../../../constants/pallete";
 import "./index.css";
 import { generalConstants } from "../../../constants/general";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Collections = () => {
   const [finalized, setFinalized] = useState(false);
 
-  useState(() => {
+  useEffect(() => {
     setTimeout(() => {
       setFinalized(true);
     }, 1000);
   }, []);
 
-  const track = document.getElementById("image-track");
+  const handleOnDown = (track, e) => (track.dataset.mouseDownAt = e.clientX);
 
-  const handleOnDown = (e) => (track.dataset.mouseDownAt = e.clientX);
-
-  const handleOnUp = () => {
+  const handleOnUp = (track) => {
     track.dataset.mouseDownAt = "0" || 0;
     track.dataset.prevPercentage = track.dataset.percentage || 0;
   };
 
-  const handleOnMove = (e) => {
+  const handleOnMove = (track, e) => {
     if (track.dataset.mouseDownAt === "0") return;
 
     const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
       maxDelta = window.innerWidth / 2;
 
-    const prevPercentage = parseFloat(track.dataset.prevPercentage) || 0; // add guard here
-    const percentage = (mouseDelta / maxDelta) * -100;
-    const nextPercentageUnconstrained = prevPercentage + percentage;
+    const prevPercentage = parseFloat(track.dataset.prevPercentage) || 0;
+    const percentage = (mouseDelta / maxDelta) * -100 || 0;
+    const nextPercentageUnconstrained = prevPercentage + percentage || 0;
 
-    // add guards here to ensure nextPercentage is a valid number
-    const nextPercentage = Math.max(
-      Math.min(nextPercentageUnconstrained, 0),
-      -100
-    );
+    const nextPercentage =
+      Math.max(Math.min(nextPercentageUnconstrained, 0), -100) || 0;
     if (isNaN(nextPercentage)) return;
 
     track.dataset.percentage = nextPercentage || 0;
@@ -58,19 +52,47 @@ const Collections = () => {
     }
   };
 
-  /* -- Had to add extra lines for touch events -- */
+  useEffect(() => {
+    const track = document.getElementById("image-track");
 
-  window.onmousedown = (e) => handleOnDown(e);
+    window.addEventListener("mousedown", (e) => handleOnDown(track, e));
+    window.addEventListener("touchstart", (e) =>
+      handleOnDown(track, e.touches[0])
+    );
+    window.addEventListener("mouseup", () => handleOnUp(track));
+    window.addEventListener("touchend", () => handleOnUp(track));
+    window.addEventListener("mousemove", (e) => handleOnMove(track, e));
+    window.addEventListener("touchmove", (e) =>
+      handleOnMove(track, e.touches[0])
+    );
 
-  window.ontouchstart = (e) => handleOnDown(e.touches[0]);
+    return () => {
+      window.removeEventListener("mousedown", (e) => handleOnDown(track, e));
+      window.removeEventListener("touchstart", (e) =>
+        handleOnDown(track, e.touches[0])
+      );
+      window.removeEventListener("mouseup", () => handleOnUp(track));
+      window.removeEventListener("touchend", () => handleOnUp(track));
+      window.removeEventListener("mousemove", (e) => handleOnMove(track, e));
+      window.removeEventListener("touchmove", (e) =>
+        handleOnMove(track, e.touches[0])
+      );
+    };
+  }, []);
 
-  window.onmouseup = (e) => handleOnUp(e);
-
-  window.ontouchend = (e) => handleOnUp(e.touches[0]);
-
-  window.onmousemove = (e) => handleOnMove(e);
-
-  window.ontouchmove = (e) => handleOnMove(e.touches[0]);
+  const Image = (image) => {
+    return (
+      <img
+        style={{
+          transform: finalized ? "translate(0px, 0px)" : "translate(0px, 40px)",
+        }}
+        className='image'
+        draggable={false}
+        src={image}
+        alt=''
+      />
+    );
+  };
 
   return (
     <>
@@ -80,7 +102,7 @@ const Collections = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: Colors.BLACKISH,
+          backgroundColor: "black",
           width: "100vw",
           height: "100vh",
           paddingLeft: generalConstants.PADDING,
@@ -106,7 +128,7 @@ const Collections = () => {
               style={{
                 transform: finalized
                   ? "translate(0px, 0px)"
-                  : "translate(0px, 60px)",
+                  : "translate(0px, 40px)",
               }}
               className='image'
               draggable={false}
