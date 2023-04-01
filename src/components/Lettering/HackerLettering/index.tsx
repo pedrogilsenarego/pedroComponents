@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
-import "./index.css";
 
 interface Props {
   message?: string;
@@ -9,7 +8,8 @@ interface Props {
 const HackerLettering = ({ message = "The men that killed his mother" }: Props) => {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVXWYZ0123456789+-";
   const [randomNumbers, setRandomNumbers] = useState<number[]>([]);
-  const [stopEffect, setStopEffect] = useState<boolean>(false)
+  const [stopEffect, setStopEffect] = useState<boolean>(false);
+  const [counter, setCounter] = useState<number>(-1);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -21,27 +21,52 @@ const HackerLettering = ({ message = "The men that killed his mother" }: Props) 
     return () => clearInterval(intervalId);
   }, [message]);
 
-
+  useEffect(() => {
+    if (stopEffect) {
+      const intervalId = setInterval(() => {
+        if (counter <= message.length) setCounter(counter + 1);
+      }, 100);
+      return () => clearInterval(intervalId);
+    }
+    if (!stopEffect) setCounter(-1);
+  }, [stopEffect, counter]);
 
   return (
-    <Box display="flex" onMouseEnter={() => setStopEffect(true)} onMouseLeave={() => setStopEffect(false)}>
+    <Box
+      display="flex"
+      position="relative"
+      onMouseEnter={() => setStopEffect(true)}
+      onMouseLeave={() => setStopEffect(false)}
+    >
       {message.split("").map((item, pos) => {
+
+
         return (
-          <span key={pos} className="hacker-lettering__char-wrapper">
+          <div key={pos} style={{
+            border: "solid 1px #ffffff36",
+
+            width: "2.3rem",
+            height: "3rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}>
             {item === " " ? (
               "\u00A0"
             ) : (
-              <Typography
-                color="white"
-                fontSize="3rem"
-                fontWeight={800}
+              <Typography color="white" style={{
 
-                style={{ textTransform: "uppercase", opacity: stopEffect ? 1 : 0.6 }}
-              >
-                {stopEffect ? item : letters[randomNumbers[pos]]}
+
+
+                opacity: pos <= counter ? 1 : 0.6,
+                textTransform: "uppercase",
+                fontSize: "3rem",
+                fontWeight: 800,
+              }}>
+                {pos <= counter ? item : letters[randomNumbers[pos]]}
               </Typography>
             )}
-          </span>
+          </div>
         );
       })}
     </Box>

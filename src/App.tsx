@@ -1,3 +1,4 @@
+import Swiper from "./components/Carousells/Swipper"
 import DancingCarousell from "./components/Carousells/DancingCarousell";
 import VerticalCarousell from "./components/Carousells/VerticalCarousell";
 import HackerLettering from "./components/Lettering/HackerLettering";
@@ -15,7 +16,7 @@ const App = () => {
           backgroundColor: "black",
         }}
       >
-        <HackerLettering />
+        <Swiper />
 
       </div>
     </>
