@@ -80,20 +80,6 @@ const Collections = () => {
     };
   }, []);
 
-  const Image = (image) => {
-    return (
-      <img
-        style={{
-          transform: finalized ? "translate(0px, 0px)" : "translate(0px, 40px)",
-        }}
-        className='image'
-        draggable={false}
-        src={image}
-        alt=''
-      />
-    );
-  };
-
   return (
     <>
       <Box

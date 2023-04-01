@@ -1,5 +1,6 @@
 import DancingCarousell from "./components/Carousells/DancingCarousell";
 import VerticalCarousell from "./components/Carousells/VerticalCarousell";
+import HackerLettering from "./components/Lettering/HackerLettering";
 
 const App = () => {
   return (
@@ -8,11 +9,14 @@ const App = () => {
         style={{
           height: "100vh",
           width: "100vw",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           backgroundColor: "black",
         }}
       >
-        <VerticalCarousell />
-        <DancingCarousell />
+        <HackerLettering />
+
       </div>
     </>
   );
